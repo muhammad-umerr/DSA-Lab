@@ -1,0 +1,2 @@
+AVL trees are height-balanced binary search trees that ensure O(log n) search, insertion, and deletion.
+They automatically rotate nodes to maintain balance and avoid skewed trees
