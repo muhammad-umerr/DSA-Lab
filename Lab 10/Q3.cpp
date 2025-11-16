@@ -3,7 +3,6 @@ using namespace std;
 
 int kthLargest(int arr[], int n, int k)
 {
-    // Selection Sort (descending)
     for (int i = 0; i < n - 1; i++)
     {
         int maxIndex = i;
@@ -12,7 +11,6 @@ int kthLargest(int arr[], int n, int k)
             if (arr[j] > arr[maxIndex])
                 maxIndex = j;
         }
-        // swap
         int temp = arr[i];
         arr[i] = arr[maxIndex];
         arr[maxIndex] = temp;
