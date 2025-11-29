@@ -1,60 +1,81 @@
-
 #include <iostream>
-#include <cstring>
 using namespace std;
 
-void buildLPS(const char pat[], int m, int lps[]) {
-    int len = 0;
-    lps[0] = 0;
+const int N = 6;
 
-    int i = 1;
-    while (i < m) {
-        if (pat[i] == pat[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len != 0)
-                len = lps[len - 1];
-            else {
-                lps[i] = 0;
-                i++;
+int adjMatrix[N][N];
+int adjList[N][N]; 
+int adjCount[N];
+
+bool visited[N];
+
+void addEdge(int u, int v) {
+    adjMatrix[u][v] = adjMatrix[v][u] = 1;
+
+    adjList[u][adjCount[u]++] = v;
+    adjList[v][adjCount[v]++] = u;
+}
+
+void BFS(int start) {
+    bool vis[N] = { false };
+    int q[50], front = 0, rear = 0;
+
+    q[rear++] = start;
+    vis[start] = true;
+
+    while (front < rear) {
+        int u = q[front++];
+        cout << u << " ";
+
+        for (int i = 0; i < adjCount[u]; i++) {
+            int v = adjList[u][i];
+            if (!vis[v]) {
+                vis[v] = true;
+                q[rear++] = v;
             }
         }
     }
 }
 
-void KMP(const char text[], const char pat[]) {
-    int n = strlen(text);
-    int m = strlen(pat);
-
-    int lps[1000];
-    buildLPS(pat, m, lps);
-
-    cout << "LPS Array: ";
-    for (int i = 0; i < m; i++) cout << lps[i] << " ";
-    cout << endl;
-
-    int i = 0, j = 0;
-    while (i < n) {
-        if (text[i] == pat[j]) {
-            i++;
-            j++;
-        }
-        if (j == m) {
-            cout << i - j << " ";
-            j = lps[j - 1];
-        }
-        else if (i < n && text[i] != pat[j]) {
-            if (j != 0) j = lps[j - 1];
-            else i++;
-        }
+void DFSRec(int u) {
+    visited[u] = true;
+    cout << u << " ";
+    for (int i = 0; i < adjCount[u]; i++) {
+        int v = adjList[u][i];
+        if (!visited[v])
+            DFSRec(v);
     }
 }
 
 int main() {
-    const char text[] = "abababababc";
-    const char pat[] = "abab";
-    KMP(text, pat);
+    addEdge(1, 2);
+    addEdge(1, 3);
+    addEdge(2, 4);
+    addEdge(2, 5);
+    addEdge(3, 5);
+    addEdge(4, 5);
+
+    cout << "Adjacency Matrix:\n";
+    for (int i = 1; i <= 5; i++) {
+        for (int j = 1; j <= 5; j++)
+            cout << adjMatrix[i][j] << " ";
+        cout << endl;
+    }
+
+    cout << "\nAdjacency List:\n";
+    for (int i = 1; i <= 5; i++) {
+        cout << i << ": ";
+        for (int j = 0; j < adjCount[i]; j++)
+            cout << adjList[i][j] << " ";
+        cout << endl;
+    }
+
+    cout << "\nBFS from 1: ";
+    BFS(1);
+
+    cout << "\nDFS from 1: ";
+    for (int i = 0; i < N; i++) visited[i] = false;
+    DFSRec(1);
+
     return 0;
 }
